@@ -20,11 +20,18 @@ namespace g3
         }
         public static void ForEach<T>( IEnumerable<T> source, Action<T> body )
         {
+            if (g3SystemConfig.EnableMultiThreading)
+            {
 #if G3_USING_UNITY && (NET_2_0 || NET_2_0_SUBSET)
-            for_each<T>(source, body);
+                for_each<T>(source, body);
 #else
-            Parallel.ForEach<T>(source, body);
+                Parallel.ForEach<T>(source, body);
 #endif
+            }
+            else
+            {
+                ForEach_Sequential(source, body);
+            }
         }
 
 
